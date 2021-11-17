@@ -4,14 +4,16 @@ import useAgora from './hooks/useAgora';
 import MediaPlayer from './components/MediaPlayer';
 import './Call.css';
 
-const client = AgoraRTC.createClient({ codec: 'h264', mode: 'rtc' });
+const client = AgoraRTC.createClient({ codec: 'vp8', mode: 'live' });
+AgoraRTC.setLogLevel(0);
+client.setClientRole('host');
 
 function Call() {
   const [ appid, setAppid ] = useState('');
   const [ token, setToken ] = useState('');
   const [ channel, setChannel ] = useState('');
   const {
-    localAudioTrack, localVideoTrack, leave, join, joinState, remoteUsers
+    localAudioTrack, leave, join, joinState, remoteUsers
   } = useAgora(client);
 
   return (
@@ -36,8 +38,8 @@ function Call() {
       </form>
       <div className='player-container'>
         <div className='local-player-wrapper'>
-          <p className='local-player-text'>{localVideoTrack && `localTrack`}{joinState && localVideoTrack ? `(${client.uid})` : ''}</p>
-          <MediaPlayer videoTrack={localVideoTrack} audioTrack={undefined}></MediaPlayer>
+          <p className='local-player-text'>{localAudioTrack && `localTrack`}{joinState && localAudioTrack ? `(${client.uid})` : ''}</p>
+          
         </div>
         {remoteUsers.map(user => (<div className='remote-player-wrapper' key={user.uid}>
             <p className='remote-player-text'>{`remoteVideo(${user.uid})`}</p>
